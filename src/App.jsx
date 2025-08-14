@@ -1,14 +1,6 @@
-import { useState } from 'react';
-import './App.css';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './app/router';
 
-function App() {
-  return (
-    <>
-      <div className='min-h-screen bg-slate-100 text-slate-900'>
-        <h1>Hello React</h1>
-      </div>
-    </>
-  );
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
