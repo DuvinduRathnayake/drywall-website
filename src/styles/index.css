@@ -1,1 +1,35 @@
 @import 'tailwindcss';
+
+:root {
+  --heading-font: 'Montserrat', sans-serif;
+  --body-font: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--body-font);
+}
+
+h1,
+h2,
+h3,
+.heading {
+  font-family: var(--heading-font);
+}
+
+/* src/index.css */
+:root {
+  --primary: #1f4e79; /* Deep Steel Blue - trustworthy */
+  --secondary: #ffb400; /* Warm Amber - accent & call-to-action */
+  --dark: #0d1b2a; /* Rich Navy - background contrast */
+  --light: #f9fafb; /* Soft White - clean surfaces */
+  --neutral: #6b7280; /* Neutral Gray - secondary text */
+}
+
+/* Dark mode overrides */
+.dark {
+  --primary: #4a90e2;
+  --secondary: #ffd369;
+  --dark: #1b263b;
+  --light: #0d1b2a;
+  --neutral: #9ca3af;
+}
