@@ -23,10 +23,7 @@ export default function ServicesTeaser() {
           From new installs to seamless finishes and quick repairs — we’ve got
           you covered.
         </p>
-        <p className='mt-2 text-[color:var(--dark)]/80 max-w-2xl'>
-          From new installs to seamless finishes and quick repairs — we’ve got
-          you covered.
-        </p>
+
         {/* Grid for cards goes here (next step) */}
       </div>
     </section>
