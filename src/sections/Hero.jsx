@@ -1,15 +1,33 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export default function Hero() {
+  // === Carousel config ===
+  const images = useMemo(
+    () => ['/carasoual1.jpg', '/carasoual2.jpg', '/carasoual3.jpg'],
+    []
+  );
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const timerRef = useRef(null);
+
+  const next = () => setIndex((i) => (i + 1) % images.length);
+
+  useEffect(() => {
+    if (paused || images.length <= 1) return;
+    if (timerRef.current) window.clearInterval(timerRef.current);
+    timerRef.current = window.setInterval(next, 4000);
+    return () => {
+      if (timerRef.current) window.clearInterval(timerRef.current);
+    };
+  }, [paused, images.length]);
+
   return (
     <section
       className='bg-[color:var(--light)]'
       aria-label='Drywall company hero section'
     >
-      <div
-        className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16
-               grid lg:grid-cols-2 gap-10 items-center'
-      >
+      <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 grid lg:grid-cols-2 gap-10 items-center'>
         {/* LEFT COLUMN */}
         <div>
           <h1 className='text-3xl sm:text-4xl font-extrabold tracking-tight text-[color:var(--primary)]'>
@@ -25,21 +43,13 @@ export default function Hero() {
           <div className='mt-6 flex flex-col sm:flex-row gap-3'>
             <Link
               to='/contact'
-              className='inline-flex items-center justify-center px-5 py-3 rounded-xl
-                     bg-[color:var(--secondary)] text-[color:var(--dark)]
-                     font-semibold shadow-sm ring-1 ring-black/5
-                     hover:opacity-90 transition'
+              className='inline-flex items-center justify-center px-5 py-3 rounded-xl bg-[color:var(--secondary)] text-[color:var(--dark)] font-semibold shadow-sm ring-1 ring-black/5 hover:opacity-90 transition'
             >
               Get a Quote
             </Link>
             <a
               href='tel:+15195551234'
-              className='inline-flex items-center justify-center px-5 py-3 rounded-xl font-semibold
-                     border border-[color:var(--primary)]/20
-                     text-[color:var(--primary)]
-                     hover:text-[color:var(--secondary)]
-                     hover:border-[color:var(--secondary)]/40
-                     transition'
+              className='inline-flex items-center justify-center px-5 py-3 rounded-xl font-semibold border border-[color:var(--primary)]/20 text-[color:var(--primary)] hover:text-[color:var(--secondary)] hover:border-[color:var(--secondary)]/40 transition'
             >
               Call Now (519) 555-1234
             </a>
@@ -66,23 +76,47 @@ export default function Hero() {
           </ul>
         </div>
 
-        {/* RIGHT COLUMN (visual placeholder / carousel later) */}
+        {/* RIGHT COLUMN (auto carousel only, no buttons) */}
         <div className='mt-8 lg:mt-0'>
-          <div className='aspect-[4/3] w-full rounded-2xl shadow-lg ring-1 ring-black/5 overflow-hidden grid place-items-center bg-gradient-to-br from-white to-[color:var(--secondary)]/10'>
-            {/* If you have an image, put it here */}
-            <img
-              src='/carasoual1.jpg'
-              alt='Drywall installation in progress'
-              className='w-full h-full object-cover'
-            />
+          <div
+            className='relative aspect-[4/3] w-full rounded-2xl shadow-lg ring-1 ring-black/5 overflow-hidden bg-gradient-to-br from-white to-[color:var(--secondary)]/10'
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {/* Slides */}
+            {images.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt={`Project photo ${i + 1}`}
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                  i === index ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-hidden={i === index ? 'false' : 'true'}
+              />
+            ))}
 
-            {/* TEMPORARY fallback text */}
-            <div className='text-center px-6'>
-              <div className='text-5xl'>🧰</div>
-              <p className='mt-2 text-[color:var(--primary)]/70'>
-                Project photos coming soon
-              </p>
-            </div>
+            {/* Dots */}
+            {images.length > 1 && (
+              <div className='absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2'>
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setIndex(i)}
+                    className={`h-2.5 w-2.5 rounded-full border border-white/70 transition-all ${
+                      i === index ? 'bg-white' : 'bg-white/30'
+                    }`}
+                    aria-label={`Go to slide ${i + 1}`}
+                    aria-current={i === index}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Live region for screen readers */}
+            <span className='sr-only' aria-live='polite'>
+              Slide {index + 1} of {images.length}
+            </span>
           </div>
         </div>
       </div>
