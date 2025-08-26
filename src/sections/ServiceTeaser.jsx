@@ -198,6 +198,21 @@ export default function ServicesTeaser() {
             Get a Free Quote
           </a>
         </div>
+
+        <div className='mt-8 rounded-xl border border-[color:var(--dark)]/10 p-4 sm:flex items-center justify-between'>
+          <p className='text-[color:var(--dark)]/80'>
+            Not sure what to pick? Send a photo — we’ll tell you the fastest,
+            cleanest fix.
+          </p>
+          <a
+            href='/contact'
+            className='mt-3 sm:mt-0 inline-flex items-center justify-center px-4 py-2 rounded-lg 
+                       bg-[color:var(--secondary)] text-[color:var(--dark)] font-semibold ring-1 ring-black/5 
+                       hover:opacity-90 transition'
+          >
+            Get a Free Quote
+          </a>
+        </div>
       </div>
     </section>
   );
