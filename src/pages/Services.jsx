@@ -1,4 +1,5 @@
 // src/pages/Services.jsx
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const services = [
@@ -81,15 +82,92 @@ const services = [
 ];
 
 export default function Services() {
+  const rootRef = useRef(null);
+
+  // Page-enter animation for header + sticky nav
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    const nodes = Array.from(root.querySelectorAll('[data-animate]')).sort(
+      (a, b) =>
+        (Number(a.dataset.animate) || 0) - (Number(b.dataset.animate) || 0)
+    );
+
+    nodes.forEach((el, i) => {
+      if (reduce) {
+        el.classList.remove('opacity-0', 'translate-y-2');
+        el.classList.add('opacity-100', 'translate-y-0');
+        return;
+      }
+      const delay = Number(el.dataset.delay || i * 90);
+      el.style.transitionDelay = `${delay}ms`;
+      requestAnimationFrame(() => {
+        el.classList.remove('opacity-0', 'translate-y-2');
+        el.classList.add('opacity-100', 'translate-y-0');
+      });
+    });
+
+    return () => nodes.forEach((el) => (el.style.transitionDelay = ''));
+  }, []);
+
+  // Scroll-reveal for each section and FAQ items
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const revealNodes = Array.from(root.querySelectorAll('[data-reveal]'));
+
+    if (reduce) {
+      revealNodes.forEach((el) => {
+        el.classList.remove('opacity-0', 'translate-y-2');
+        el.classList.add('opacity-100', 'translate-y-0');
+      });
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const el = e.target;
+            const delay = Number(el.dataset.delay || 0);
+            el.style.transitionDelay = `${delay}ms`;
+            requestAnimationFrame(() => {
+              el.classList.remove('opacity-0', 'translate-y-2');
+              el.classList.add('opacity-100', 'translate-y-0');
+            });
+            io.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    revealNodes.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <main>
+    <main ref={rootRef}>
       {/* Strap header */}
       <section className='bg-[color:var(--light)] py-8'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <h1 className='text-2xl sm:text-3xl font-extrabold text-[color:var(--primary)]'>
+          <h1
+            data-animate='1'
+            className='opacity-0 translate-y-2 transition-all duration-700 text-2xl sm:text-3xl font-extrabold text-[color:var(--primary)]'
+          >
             Our Services
           </h1>
-          <p className='mt-2 text-[color:var(--dark)]/80'>
+          <p
+            data-animate='2'
+            className='opacity-0 translate-y-2 transition-all duration-700 mt-2 text-[color:var(--dark)]/80'
+          >
             Clear scope, tidy sites, and smooth finishes. Example ranges below —
             final pricing depends on on-site conditions.
           </p>
@@ -97,7 +175,10 @@ export default function Services() {
       </section>
 
       {/* Sticky in-page nav */}
-      <div className='sticky top-16 z-30 bg-white/90 backdrop-blur border-y border-[color:var(--dark)]/10'>
+      <div
+        data-animate='3'
+        className='opacity-0 translate-y-2 transition-all duration-700 sticky top-16 z-30 bg-white/90 backdrop-blur border-y border-[color:var(--dark)]/10'
+      >
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-x-auto'>
           <ul className='flex gap-2 py-3 text-sm'>
             {services.map((s) => (
@@ -125,7 +206,11 @@ export default function Services() {
         >
           <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-8 items-center'>
             {/* Text */}
-            <div className='lg:col-span-6'>
+            <div
+              data-reveal
+              className='opacity-0 translate-y-2 transition-all duration-700 lg:col-span-6'
+              data-delay='0'
+            >
               <p className='text-sm font-semibold tracking-wide text-[color:var(--secondary)]'>
                 {s.title}
               </p>
@@ -181,7 +266,11 @@ export default function Services() {
             </div>
 
             {/* Image */}
-            <div className='lg:col-span-6'>
+            <div
+              data-reveal
+              className='opacity-0 translate-y-2 transition-all duration-700 lg:col-span-6'
+              data-delay='120'
+            >
               <div className='relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5'>
                 <div className='aspect-[4/3] w-full'>
                   <img
@@ -230,10 +319,12 @@ export default function Services() {
                 'What finish level should I choose?',
                 'Level 4 is standard for most walls. Level 5 adds a skim coat for ultra-smooth, critical lighting or dark paint colors.',
               ],
-            ].map(([q, a]) => (
+            ].map(([q, a], i) => (
               <details
                 key={q}
-                className='group rounded-xl border border-[color:var(--dark)]/10 bg-white p-4 open:shadow-sm'
+                data-reveal
+                data-delay={i * 90}
+                className='opacity-0 translate-y-2 transition-all duration-700 group rounded-xl border border-[color:var(--dark)]/10 bg-white p-4 open:shadow-sm'
               >
                 <summary className='cursor-pointer list-none font-semibold text-[color:var(--primary)] flex items-center justify-between'>
                   {q}
@@ -246,7 +337,11 @@ export default function Services() {
             ))}
           </div>
 
-          <div className='mt-8 text-center'>
+          <div
+            data-reveal
+            data-delay='360'
+            className='opacity-0 translate-y-2 transition-all duration-700 mt-8 text-center'
+          >
             <Link
               to='/contact'
               className='inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[color:var(--primary)] text-white font-semibold shadow hover:shadow-md transition'

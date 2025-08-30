@@ -272,39 +272,6 @@ export default function About() {
           </ol>
         </div>
       </section>
-
-      {/* CTA band */}
-      <section className='bg-white py-12'>
-        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <div className='rounded-2xl border border-[color:var(--dark)]/10 bg-gradient-to-r from-[color:var(--secondary)]/25 to-transparent p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-            <div>
-              <p className='text-sm font-semibold tracking-wide text-[color:var(--secondary)]'>
-                Ready when you are
-              </p>
-              <h3 className='mt-1 text-xl sm:text-2xl font-extrabold text-[color:var(--primary)]'>
-                Let’s plan your project
-              </h3>
-              <p className='mt-1 text-[color:var(--dark)]/80'>
-                Send a photo or short video for the fastest quote.
-              </p>
-            </div>
-            <div className='flex flex-wrap gap-3'>
-              <a
-                href='tel:+15195551234'
-                className='inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[color:var(--secondary)] text-[color:var(--dark)] font-semibold ring-1 ring-black/5 hover:opacity-90 transition'
-              >
-                Call (519) 555-1234
-              </a>
-              <Link
-                to='/contact'
-                className='inline-flex items-center justify-center px-4 py-2 rounded-xl border border-[color:var(--primary)]/25 text-[color:var(--primary)] hover:text-[color:var(--secondary)] hover:border-[color:var(--secondary)]/40 transition'
-              >
-                Get a Quote
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
